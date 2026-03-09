@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>あなたを構成する9人の美闘士メーカー</title>
+  <title>私を構成する9人の美闘士メーカー</title>
   <style>
     :root {
       --bg: #0f0b16;
@@ -82,27 +82,6 @@
       color: var(--muted);
       font-size: 13px;
       line-height: 1.7;
-    }
-
-    .field {
-      margin-top: 12px;
-    }
-
-    .field label {
-      display: block;
-      margin-bottom: 6px;
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    input[type="text"] {
-      width: 100%;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.18);
-      color: var(--text);
-      border-radius: 14px;
-      padding: 12px 14px;
-      outline: none;
     }
 
     .library {
@@ -443,12 +422,6 @@
         padding: 5px;
       }
 
-      input[type="text"] {
-        padding: 10px 12px;
-        font-size: 14px;
-        border-radius: 12px;
-      }
-
       .library-details {
         padding: 8px 10px;
         border-radius: 12px;
@@ -550,7 +523,6 @@
         padding: 10px;
       }
 
-      .field label,
       .help,
       .stat {
         font-size: 11px;
@@ -628,7 +600,7 @@
 <body>
   <div class="wrap">
     <div class="hero">
-      <h1>あなたを構成する9人の美闘士メーカー</h1>
+      <h1>私を構成する9人の美闘士メーカー</h1>
       <p>
         左の画像一覧からキャラを選び、選択中の枠に入れてください。最後にPNGとして保存できます。
       </p>
@@ -637,16 +609,11 @@
     <div class="layout">
       <div class="panel panel-controls">
         <div class="panel-inner">
-          <div class="section section-title">
-            <h2>タイトル</h2>
-            <div class="field">
-              <label for="titleInput">タイトル</label>
-              <input id="titleInput" type="text" value="あなたを構成する9人の美闘士" />
-            </div>
-            <div class="field">
-              <label for="tagInput">ハッシュタグ</label>
-              <input id="tagInput" type="text" value="#あなたを構成する9人の美闘士" />
-            </div>
+          <div class="section">
+            <h2>固定タイトル</h2>
+            <div class="help">タイトルとハッシュタグは固定です。編集はできません。</div>
+            <div class="stat">タイトル: 私を構成する9人の美闘士</div>
+            <div class="stat">ハッシュタグ: #私を構成する9人の美闘士 / #My9QBwarriors</div>
           </div>
 
           <div class="section section-mobile-preview">
@@ -655,11 +622,11 @@
               <div class="canvas mobile-canvas" id="exportTargetMobile">
                 <div class="canvas-header">
                   <div class="eyebrow">QB COMMUNITY TEMPLATE</div>
-                  <div class="canvas-title" id="canvasTitleMobile">あなたを構成する9人の美闘士</div>
+                  <div class="canvas-title" id="canvasTitleMobile">私を構成する9人の美闘士</div>
                 </div>
                 <div class="grid" id="gridMobile"></div>
                 <div class="canvas-footer">
-                  <div id="canvasTagMobile">#あなたを構成する9人の美闘士</div>
+                  <div id="canvasTagMobile">#私を構成する9人の美闘士</div>
                   <div class="muted">Template Maker</div>
                 </div>
               </div>
@@ -674,16 +641,14 @@
               <button class="secondary" id="clearSlotBtn">選択枠をクリア</button>
               <button class="secondary" id="resetAllBtn">全部リセット</button>
               <button class="secondary" id="randomFillBtn">ランダム編成</button>
-              <button class="secondary" id="copyUrlBtn">URLコピー</button>
+              <button class="secondary" id="copyUrlBtn">投稿文をコピー</button>
               <button class="primary" id="downloadBtn">画像を書き出す</button>
             </div>
           </div>
 
           <div class="section section-library">
-            <div class="field">
-              <label for="searchInput">キャラ検索</label>
-              <input id="searchInput" type="text" placeholder="名前で検索" />
-            </div>
+            <h2>キャラ検索</h2>
+            <input id="searchInput" type="text" placeholder="名前で検索" />
 
             <div class="stat" id="libraryCount"></div>
 
@@ -700,11 +665,11 @@
           <div class="canvas" id="exportTarget">
             <div class="canvas-header">
               <div class="eyebrow">QB COMMUNITY TEMPLATE</div>
-              <div class="canvas-title" id="canvasTitle">あなたを構成する9人の美闘士</div>
+              <div class="canvas-title" id="canvasTitle">私を構成する9人の美闘士</div>
             </div>
             <div class="grid" id="grid"></div>
             <div class="canvas-footer">
-              <div id="canvasTag">#あなたを構成する9人の美闘士</div>
+              <div id="canvasTag">#私を構成する9人の美闘士</div>
               <div class="muted">Template Maker</div>
             </div>
           </div>
@@ -715,6 +680,10 @@
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
+    const FIXED_TITLE = '私を構成する9人の美闘士';
+    const FIXED_TAG_PRIMARY = '#私を構成する9人の美闘士';
+    const FIXED_TAG_SECONDARY = '#My9QBwarriors';
+
     const CHARACTER_LIBRARY = [
       { id: "reina", name: "レイナ", src: "assets/reina.jpg" },
       { id: "risty", name: "リスティ", src: "assets/risty.jpg" },
@@ -783,9 +752,6 @@
     const searchInput = document.getElementById('searchInput');
     const libraryCountEl = document.getElementById('libraryCount');
 
-    const titleInput = document.getElementById('titleInput');
-    const tagInput = document.getElementById('tagInput');
-
     const canvasTitle = document.getElementById('canvasTitle');
     const canvasTitleMobile = document.getElementById('canvasTitleMobile');
 
@@ -797,6 +763,14 @@
     const copyUrlBtn = document.getElementById('copyUrlBtn');
     const downloadBtn = document.getElementById('downloadBtn');
     const randomFillBtn = document.getElementById('randomFillBtn');
+
+    function applyFixedText() {
+      document.title = FIXED_TITLE + 'メーカー';
+      canvasTitle.textContent = FIXED_TITLE;
+      if (canvasTitleMobile) canvasTitleMobile.textContent = FIXED_TITLE;
+      canvasTag.textContent = FIXED_TAG_PRIMARY;
+      if (canvasTagMobile) canvasTagMobile.textContent = FIXED_TAG_PRIMARY;
+    }
 
     function renderSlotButtons() {
       slotButtonsEl.innerHTML = '';
@@ -940,44 +914,17 @@
         url.searchParams.set("slots", slotIds);
       }
 
-      const title = titleInput.value.trim();
-      const tag = tagInput.value.trim();
-
-      if (title && title !== "あなたを構成する9人の美闘士") {
-        url.searchParams.set("title", title);
-      } else {
-        url.searchParams.delete("title");
-      }
-
-      if (tag && tag !== "#あなたを構成する9人の美闘士") {
-        url.searchParams.set("tag", tag);
-      } else {
-        url.searchParams.delete("tag");
-      }
+      url.searchParams.delete("title");
+      url.searchParams.delete("tag");
 
       history.replaceState(null, "", url.toString());
     }
 
     function loadFromUrl() {
       const params = new URLSearchParams(window.location.search);
-
-      const savedTitle = params.get("title");
-      const savedTag = params.get("tag");
       const savedSlots = params.get("slots");
 
-      if (savedTitle !== null) {
-        titleInput.value = savedTitle;
-        const titleValue = savedTitle || "あなたを構成する9人の美闘士";
-        canvasTitle.textContent = titleValue;
-        if (canvasTitleMobile) canvasTitleMobile.textContent = titleValue;
-      }
-
-      if (savedTag !== null) {
-        tagInput.value = savedTag;
-        const tagValue = savedTag || "";
-        canvasTag.textContent = tagValue;
-        if (canvasTagMobile) canvasTagMobile.textContent = tagValue;
-      }
+      applyFixedText();
 
       if (savedSlots) {
         const ids = savedSlots.split(",");
@@ -991,11 +938,19 @@
 
     async function copyShareUrl() {
       updateShareUrl();
+
+      const shareText = [
+        window.location.href,
+        '',
+        FIXED_TAG_PRIMARY,
+        FIXED_TAG_SECONDARY
+      ].join('\n');
+
       try {
-        await navigator.clipboard.writeText(window.location.href);
-        alert("共有URLをコピーしました");
+        await navigator.clipboard.writeText(shareText);
+        alert('投稿文をコピーしました');
       } catch (error) {
-        alert("URLのコピーに失敗しました");
+        alert('コピーに失敗しました');
       }
     }
 
@@ -1059,24 +1014,6 @@
       });
     }
 
-    titleInput.addEventListener('input', () => {
-      const value = titleInput.value || 'あなたを構成する9人の美闘士';
-      canvasTitle.textContent = value;
-      if (canvasTitleMobile) canvasTitleMobile.textContent = value;
-      updateShareUrl();
-    });
-
-    tagInput.addEventListener('input', () => {
-      const value = tagInput.value || '';
-      canvasTag.textContent = value;
-      if (canvasTagMobile) canvasTagMobile.textContent = value;
-      updateShareUrl();
-    });
-
-    searchInput.addEventListener('input', () => {
-      renderLibrary();
-    });
-
     clearSlotBtn.onclick = () => {
       slots[selectedSlot] = { ...slots[selectedSlot], id: '', name: '', src: '' };
       renderSlotButtons();
@@ -1090,15 +1027,8 @@
       }
 
       selectedSlot = 0;
-      titleInput.value = 'あなたを構成する9人の美闘士';
-      tagInput.value = '#あなたを構成する9人の美闘士';
 
-      canvasTitle.textContent = titleInput.value;
-      if (canvasTitleMobile) canvasTitleMobile.textContent = titleInput.value;
-
-      canvasTag.textContent = tagInput.value;
-      if (canvasTagMobile) canvasTagMobile.textContent = tagInput.value;
-
+      applyFixedText();
       renderSlotButtons();
       renderLibrary();
       renderGrid();
