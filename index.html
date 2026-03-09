@@ -84,6 +84,27 @@
       line-height: 1.7;
     }
 
+    .field {
+      margin-top: 12px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px 14px;
+      outline: none;
+    }
+
     .library {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -422,6 +443,12 @@
         padding: 5px;
       }
 
+      input[type="text"] {
+        padding: 10px 12px;
+        font-size: 14px;
+        border-radius: 12px;
+      }
+
       .library-details {
         padding: 8px 10px;
         border-radius: 12px;
@@ -609,13 +636,6 @@
     <div class="layout">
       <div class="panel panel-controls">
         <div class="panel-inner">
-          <div class="section">
-            <h2>固定タイトル</h2>
-            <div class="help">タイトルとハッシュタグは固定です。編集はできません。</div>
-            <div class="stat">タイトル: 私を構成する9人の美闘士</div>
-            <div class="stat">ハッシュタグ: #私を構成する9人の美闘士 / #My9QBwarriors</div>
-          </div>
-
           <div class="section section-mobile-preview">
             <h2>プレビュー</h2>
             <div class="canvas-shell mobile-canvas-shell">
@@ -748,16 +768,12 @@
     const libraryEl = document.getElementById('library');
     const gridEl = document.getElementById('grid');
     const gridMobileEl = document.getElementById('gridMobile');
-
     const searchInput = document.getElementById('searchInput');
     const libraryCountEl = document.getElementById('libraryCount');
-
     const canvasTitle = document.getElementById('canvasTitle');
     const canvasTitleMobile = document.getElementById('canvasTitleMobile');
-
     const canvasTag = document.getElementById('canvasTag');
     const canvasTagMobile = document.getElementById('canvasTagMobile');
-
     const clearSlotBtn = document.getElementById('clearSlotBtn');
     const resetAllBtn = document.getElementById('resetAllBtn');
     const copyUrlBtn = document.getElementById('copyUrlBtn');
@@ -793,15 +809,11 @@
     function renderLibrary() {
       libraryEl.innerHTML = '';
 
-      const keyword = (searchInput?.value || '').trim().toLowerCase();
+      const keyword = (searchInput.value || '').trim().toLowerCase();
 
       const filtered = CHARACTER_LIBRARY.filter((item) => {
         if (!keyword) return true;
-
-        const nameJa = item.name.toLowerCase();
-        const id = item.id.toLowerCase();
-
-        return nameJa.includes(keyword) || id.includes(keyword);
+        return item.name.toLowerCase().includes(keyword) || item.id.toLowerCase().includes(keyword);
       });
 
       libraryCountEl.textContent = `${filtered.length} / ${CHARACTER_LIBRARY.length} 件`;
@@ -916,7 +928,6 @@
 
       url.searchParams.delete("title");
       url.searchParams.delete("tag");
-
       history.replaceState(null, "", url.toString());
     }
 
@@ -1014,6 +1025,10 @@
       });
     }
 
+    searchInput.addEventListener('input', () => {
+      renderLibrary();
+    });
+
     clearSlotBtn.onclick = () => {
       slots[selectedSlot] = { ...slots[selectedSlot], id: '', name: '', src: '' };
       renderSlotButtons();
@@ -1027,7 +1042,6 @@
       }
 
       selectedSlot = 0;
-
       applyFixedText();
       renderSlotButtons();
       renderLibrary();
@@ -1047,7 +1061,6 @@
     downloadBtn.onclick = async () => {
       const desktopPanel = document.querySelector('.panel-preview-desktop');
       const target = document.getElementById('exportTarget');
-
       const isMobile = window.matchMedia('(max-width: 900px)').matches;
 
       let originalStyle = null;
