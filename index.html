@@ -225,6 +225,7 @@
       border: 1px solid rgba(255,255,255,.12);
       background: rgba(0,0,0,.18);
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       border-radius: 22px;
     }
 
@@ -518,6 +519,7 @@
         gap: 2px;
         font-size: 9px;
         line-height: 1.3;
+        min-height: 34px;
       }
 
       .mobile-canvas .canvas-footer > div:first-child {
@@ -594,12 +596,12 @@
       }
 
       .mobile-canvas .grid {
-       top: 78px;
-       grid-template-columns: repeat(3, 64px);
-       grid-template-rows: repeat(3, 64px);
-       gap: 7px;
-       width: calc(64px * 3 + 7px * 2);
-       height: calc(64px * 3 + 7px * 2);
+        top: 78px;
+        grid-template-columns: repeat(3, 64px);
+        grid-template-rows: repeat(3, 64px);
+        gap: 7px;
+        width: calc(64px * 3 + 7px * 2);
+        height: calc(64px * 3 + 7px * 2);
       }
 
       .mobile-canvas .cell {
@@ -614,6 +616,7 @@
       .mobile-canvas .canvas-footer {
         padding: 6px 8px;
         font-size: 8px;
+        min-height: 30px;
       }
 
       .mobile-canvas .canvas-footer .muted {
@@ -776,6 +779,7 @@
     const libraryEl = document.getElementById('library');
     const gridEl = document.getElementById('grid');
     const gridMobileEl = document.getElementById('gridMobile');
+
     const searchInput = document.getElementById('searchInput');
     const libraryCountEl = document.getElementById('libraryCount');
 
@@ -995,6 +999,66 @@
       }
     }
 
+    async function waitForImages(container) {
+      const images = Array.from(container.querySelectorAll('img'));
+
+      await Promise.all(
+        images.map((img) => {
+          if (img.complete && img.naturalWidth > 0) {
+            return Promise.resolve();
+          }
+
+          return new Promise((resolve) => {
+            const done = () => {
+              img.removeEventListener('load', done);
+              img.removeEventListener('error', done);
+              resolve();
+            };
+            img.addEventListener('load', done);
+            img.addEventListener('error', done);
+          });
+        })
+      );
+    }
+
+    function isIOSLike() {
+      const ua = navigator.userAgent;
+      const touchMac = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+      return /iPhone|iPad|iPod/.test(ua) || touchMac;
+    }
+
+    function canvasToBlob(canvas, type = 'image/png', quality = 1) {
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), type, quality);
+      });
+    }
+
+    async function renderExportCanvas(target, scaleValue) {
+      return await html2canvas(target, {
+        backgroundColor: null,
+        scale: scaleValue,
+        useCORS: true,
+        allowTaint: false,
+        logging: false,
+        onclone: (clonedDoc) => {
+          const exportTarget = clonedDoc.getElementById('exportTarget');
+          if (!exportTarget) return;
+
+          exportTarget.style.boxShadow = 'none';
+
+          exportTarget.querySelectorAll('.canvas-header, .canvas-footer').forEach((el) => {
+            el.style.backdropFilter = 'none';
+            el.style.webkitBackdropFilter = 'none';
+            el.style.background = 'rgba(0,0,0,0.28)';
+          });
+
+          exportTarget.querySelectorAll('*').forEach((el) => {
+            el.style.textShadow = 'none';
+          });
+        }
+      });
+    }
+
     titleInput.addEventListener('input', () => {
       const value = titleInput.value || 'あなたを構成する9人の美闘士';
       canvasTitle.textContent = value;
@@ -1050,80 +1114,35 @@
       updateShareUrl();
     };
 
-    async function waitForImages(container) {
-      const images = Array.from(container.querySelectorAll('img'));
-
-      await Promise.all(
-        images.map((img) => {
-          if (img.complete && img.naturalWidth > 0) {
-            return Promise.resolve();
-          }
-
-          return new Promise((resolve) => {
-            const done = () => {
-              img.removeEventListener('load', done);
-              img.removeEventListener('error', done);
-              resolve();
-            };
-            img.addEventListener('load', done);
-            img.addEventListener('error', done);
-          });
-        })
-      );
-    }
-
-    function isIOSLike() {
-      const ua = navigator.userAgent;
-      const touchMac = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
-      return /iPhone|iPad|iPod/.test(ua) || touchMac;
-    }
-
-    function canvasToBlob(canvas, type = 'image/png', quality = 1) {
-      return new Promise((resolve) => {
-        canvas.toBlob((blob) => resolve(blob), type, quality);
-      });
-    }
-
-    function isIOSLike() {
-      const ua = navigator.userAgent;
-      const touchMac = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
-      return /iPhone|iPad|iPod/.test(ua) || touchMac;
-    }
-
-    function canvasToBlob(canvas, type = 'image/png', quality = 1) {
-      return new Promise((resolve) => {
-        canvas.toBlob((blob) => resolve(blob), type, quality);
-      });
-    }
-
-    async function renderExportCanvas(target, scaleValue) {
-      return await html2canvas(target, {
-        backgroundColor: null,
-        scale: scaleValue,
-        useCORS: true,
-        allowTaint: false,
-        logging: false,
-        onclone: (clonedDoc) => {
-          const exportTarget = clonedDoc.getElementById('exportTarget');
-          if (!exportTarget) return;
-
-          exportTarget.querySelectorAll('.canvas-header, .canvas-footer').forEach((el) => {
-            el.style.backdropFilter = 'none';
-            el.style.webkitBackdropFilter = 'none';
-            el.style.background = 'rgba(0,0,0,0.28)';
-          });
-
-          exportTarget.querySelectorAll('*').forEach((el) => {
-            el.style.textShadow = 'none';
-          });
-        }
-      });
-    }
-
     downloadBtn.onclick = async () => {
+      const desktopPanel = document.querySelector('.panel-preview-desktop');
       const target = document.getElementById('exportTarget');
 
+      const isMobile = window.matchMedia('(max-width: 900px)').matches;
+
+      let originalStyle = null;
+
       try {
+        if (isMobile && desktopPanel) {
+          originalStyle = {
+            display: desktopPanel.style.display,
+            position: desktopPanel.style.position,
+            left: desktopPanel.style.left,
+            top: desktopPanel.style.top,
+            zIndex: desktopPanel.style.zIndex,
+            opacity: desktopPanel.style.opacity,
+            pointerEvents: desktopPanel.style.pointerEvents
+          };
+
+          desktopPanel.style.display = 'block';
+          desktopPanel.style.position = 'fixed';
+          desktopPanel.style.left = '-10000px';
+          desktopPanel.style.top = '0';
+          desktopPanel.style.zIndex = '-1';
+          desktopPanel.style.opacity = '0';
+          desktopPanel.style.pointerEvents = 'none';
+        }
+
         await waitForImages(target);
 
         const primaryScale = isIOSLike() ? 1 : 2;
@@ -1172,6 +1191,16 @@
       } catch (error) {
         console.error(error);
         alert('PNG保存に失敗しました。iPhoneでは描画負荷が高い場合があります。');
+      } finally {
+        if (isMobile && desktopPanel && originalStyle) {
+          desktopPanel.style.display = originalStyle.display;
+          desktopPanel.style.position = originalStyle.position;
+          desktopPanel.style.left = originalStyle.left;
+          desktopPanel.style.top = originalStyle.top;
+          desktopPanel.style.zIndex = originalStyle.zIndex;
+          desktopPanel.style.opacity = originalStyle.opacity;
+          desktopPanel.style.pointerEvents = originalStyle.pointerEvents;
+        }
       }
     };
 
