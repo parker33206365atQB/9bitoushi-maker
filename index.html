@@ -672,7 +672,7 @@
               <button class="secondary" id="resetAllBtn">全部リセット</button>
               <button class="secondary" id="randomFillBtn">ランダム編成</button>
               <button class="secondary" id="copyUrlBtn">URLコピー</button>
-              <button class="primary" id="downloadBtn">PNG保存</button>
+              <button class="primary" id="downloadBtn">画像を書き出す</button>
             </div>
           </div>
 
@@ -1072,6 +1072,18 @@
       );
     }
 
+    function isIOSLike() {
+      const ua = navigator.userAgent;
+      const touchMac = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+      return /iPhone|iPad|iPod/.test(ua) || touchMac;
+    }
+
+    function canvasToBlob(canvas, type = 'image/png', quality = 1) {
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => resolve(blob), type, quality);
+      });
+    }
+
     downloadBtn.onclick = async () => {
       const target = document.getElementById('exportTarget');
 
@@ -1085,10 +1097,39 @@
           allowTaint: false
         });
 
+        const blob = await canvasToBlob(canvas, 'image/png');
+
+        if (!blob) {
+          throw new Error('Blobの生成に失敗しました');
+        }
+
+        const objectUrl = URL.createObjectURL(blob);
+
+        if (isIOSLike()) {
+          const opened = window.open(objectUrl, '_blank');
+
+          if (!opened) {
+            window.location.href = objectUrl;
+          }
+
+          setTimeout(() => {
+            URL.revokeObjectURL(objectUrl);
+          }, 60000);
+
+          alert('画像を新しいタブで開きました。共有メニューまたは長押しで保存してください。');
+          return;
+        }
+
         const a = document.createElement('a');
-        a.href = canvas.toDataURL('image/png');
+        a.href = objectUrl;
         a.download = 'qb-9girls-template.png';
+        document.body.appendChild(a);
         a.click();
+        a.remove();
+
+        setTimeout(() => {
+          URL.revokeObjectURL(objectUrl);
+        }, 1000);
       } catch (error) {
         console.error(error);
         alert('PNG保存に失敗しました。画像の読み込み状態を確認してください。');
