@@ -1,0 +1,1105 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>あなたを構成する9人の美闘士メーカー</title>
+  <style>
+    :root {
+      --bg: #0f0b16;
+      --panel: #171221;
+      --panel-2: #22172f;
+      --text: #f5f2ff;
+      --muted: #b9b0d3;
+      --accent: #d670ff;
+      --accent-2: #ff6fa5;
+      --line: rgba(255,255,255,0.12);
+      --shadow: 0 18px 40px rgba(0,0,0,.35);
+      --gap: 16px;
+      --cell-size: 175px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #2d1840 0%, var(--bg) 45%);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1520px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: 36px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, var(--panel), var(--panel-2));
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel-inner {
+      padding: 20px;
+    }
+
+    .section + .section {
+      margin-top: 22px;
+    }
+
+    .section h2 {
+      margin: 0 0 12px;
+      font-size: 20px;
+    }
+
+    .help {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .field {
+      margin-top: 12px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px 14px;
+      outline: none;
+    }
+
+    .library {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      max-height: 650px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .lib-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(255,255,255,.04);
+      cursor: pointer;
+      transition: transform .12s ease, border-color .12s ease;
+    }
+
+    .lib-item:hover {
+      transform: translateY(-2px);
+      border-color: rgba(214,112,255,.8);
+    }
+
+    .lib-item img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      display: block;
+      background: #0b0811;
+    }
+
+    .lib-item .name {
+      padding: 8px;
+      font-size: 12px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .slot-button {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      border-radius: 16px;
+      padding: 10px;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      min-height: 70px;
+    }
+
+    .slot-button.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(214,112,255,.25) inset;
+      background: rgba(214,112,255,.08);
+    }
+
+    .slot-button small {
+      display: block;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 14px;
+      padding: 11px 14px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      color: white;
+    }
+
+    .secondary {
+      background: rgba(255,255,255,.08);
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .canvas-shell {
+      padding: 10px;
+    }
+
+    .canvas {
+      width: 900px;
+      height: 780px;
+      position: relative;
+      overflow: hidden;
+      margin: 0 auto;
+      border-radius: 32px;
+      background: linear-gradient(145deg, #35113b 0%, #14111f 42%, #4a1827 100%);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: var(--shadow);
+      user-select: none;
+    }
+
+    .canvas-header,
+    .canvas-footer {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.18);
+      backdrop-filter: blur(10px);
+      border-radius: 22px;
+    }
+
+    .canvas-header {
+      top: 28px;
+      padding: 12px 18px;
+    }
+
+    .eyebrow {
+      color: #c4b9de;
+      font-size: 13px;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+    }
+
+    .canvas-title {
+      margin-top: 6px;
+      font-size: 40px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .canvas-footer {
+      bottom: 10px;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 18px;
+    }
+
+    .canvas-footer > div:first-child {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .canvas-footer .muted {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .2em;
+      color: #c4b9de;
+    }
+
+    .grid {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 140px;
+      display: grid;
+      grid-template-columns: repeat(3, var(--cell-size));
+      grid-template-rows: repeat(3, var(--cell-size));
+      gap: var(--gap);
+      width: calc(var(--cell-size) * 3 + var(--gap) * 2);
+      height: calc(var(--cell-size) * 3 + var(--gap) * 2);
+    }
+
+    .cell {
+      position: relative;
+      width: var(--cell-size);
+      height: var(--cell-size);
+      overflow: hidden;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+    }
+
+    .cell.active {
+      border-color: rgba(214,112,255,.9);
+      box-shadow: 0 0 0 2px rgba(214,112,255,.18) inset;
+    }
+
+    .cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: #0b0811;
+    }
+
+    .placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,.35);
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .stat {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+
+    .section-mobile-preview {
+      display: none;
+    }
+
+    .library-details {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255,255,255,.03);
+      padding: 10px 12px;
+    }
+
+    .library-details summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--text);
+      list-style: none;
+    }
+
+    .library-details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .library-details[open] summary {
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .wrap {
+        padding: 10px;
+      }
+
+      .hero {
+        margin-bottom: 14px;
+      }
+
+      .hero h1 {
+        font-size: 24px;
+        line-height: 1.25;
+      }
+
+      .hero p {
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .panel {
+        border-radius: 20px;
+      }
+
+      .panel-inner {
+        padding: 12px;
+      }
+
+      .section + .section {
+        margin-top: 16px;
+      }
+
+      .section h2 {
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+
+      .section-mobile-preview {
+        display: block;
+      }
+
+      .panel-preview-desktop {
+        display: none;
+      }
+
+      .controls {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .slot-button {
+        min-height: 56px;
+        padding: 8px;
+        border-radius: 12px;
+        font-size: 12px;
+      }
+
+      .slot-button small {
+        font-size: 10px;
+        margin-bottom: 2px;
+      }
+
+      .action-row {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .action-row button {
+        width: 100%;
+        padding: 10px 8px;
+        font-size: 12px;
+        border-radius: 12px;
+      }
+
+      .library {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        max-height: none;
+      }
+
+      .lib-item {
+        border-radius: 12px;
+      }
+
+      .lib-item .name {
+        font-size: 10px;
+        padding: 5px;
+      }
+
+      input[type="text"] {
+        padding: 10px 12px;
+        font-size: 14px;
+        border-radius: 12px;
+      }
+
+      .library-details {
+        padding: 8px 10px;
+        border-radius: 12px;
+      }
+
+      .mobile-canvas-shell {
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .mobile-canvas {
+        width: 100%;
+        max-width: 420px;
+        height: auto;
+        aspect-ratio: 900 / 780;
+        margin: 0 auto;
+        border-radius: 24px;
+      }
+
+      .mobile-canvas .canvas-header {
+        top: 14px;
+        left: 14px;
+        right: 14px;
+        padding: 10px 12px;
+        border-radius: 16px;
+      }
+
+      .mobile-canvas .eyebrow {
+        font-size: 9px;
+        letter-spacing: .16em;
+      }
+
+      .mobile-canvas .canvas-title {
+        margin-top: 4px;
+        font-size: 18px;
+        line-height: 1.2;
+        word-break: break-word;
+      }
+
+      .mobile-canvas .grid {
+        top: 82px;
+        grid-template-columns: repeat(3, 72px);
+        grid-template-rows: repeat(3, 72px);
+        gap: 8px;
+        width: calc(72px * 3 + 8px * 2);
+        height: calc(72px * 3 + 8px * 2);
+      }
+
+      .mobile-canvas .cell {
+        width: 72px;
+        height: 72px;
+        border-radius: 14px;
+      }
+
+      .mobile-canvas .placeholder {
+        font-size: 11px;
+      }
+
+      .mobile-canvas .canvas-footer {
+        left: 14px;
+        right: 14px;
+        bottom: 8px;
+        padding: 7px 10px;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        font-size: 9px;
+        line-height: 1.3;
+      }
+
+      .mobile-canvas .canvas-footer > div:first-child {
+        max-width: 100%;
+        word-break: break-all;
+      }
+
+      .mobile-canvas .canvas-footer .muted {
+        font-size: 7px;
+        letter-spacing: .08em;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .wrap {
+        padding: 8px;
+      }
+
+      .hero h1 {
+        font-size: 21px;
+      }
+
+      .hero p {
+        font-size: 12px;
+      }
+
+      .panel-inner {
+        padding: 10px;
+      }
+
+      .field label,
+      .help,
+      .stat {
+        font-size: 11px;
+      }
+
+      .controls {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+      }
+
+      .slot-button {
+        min-height: 52px;
+        padding: 7px;
+        font-size: 11px;
+      }
+
+      .action-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+      }
+
+      .action-row button {
+        font-size: 11px;
+        padding: 9px 6px;
+      }
+
+      .library {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+      }
+
+      .lib-item .name {
+        font-size: 9px;
+        padding: 4px;
+      }
+
+      .mobile-canvas {
+        max-width: 100%;
+      }
+
+      .mobile-canvas .canvas-title {
+        font-size: 16px;
+      }
+
+      .mobile-canvas .grid {
+       top: 78px;
+       grid-template-columns: repeat(3, 64px);
+       grid-template-rows: repeat(3, 64px);
+       gap: 7px;
+       width: calc(64px * 3 + 7px * 2);
+       height: calc(64px * 3 + 7px * 2);
+      }
+
+      .mobile-canvas .cell {
+        width: 64px;
+        height: 64px;
+      }
+
+      .mobile-canvas .placeholder {
+        font-size: 10px;
+      }
+
+      .mobile-canvas .canvas-footer {
+        padding: 6px 8px;
+        font-size: 8px;
+      }
+
+      .mobile-canvas .canvas-footer .muted {
+        font-size: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <h1>あなたを構成する9人の美闘士メーカー</h1>
+      <p>
+        左の画像一覧からキャラを選び、選択中の枠に入れてください。最後にPNGとして保存できます。
+      </p>
+    </div>
+
+    <div class="layout">
+      <div class="panel panel-controls">
+        <div class="panel-inner">
+          <div class="section section-title">
+            <h2>タイトル</h2>
+            <div class="field">
+              <label for="titleInput">タイトル</label>
+              <input id="titleInput" type="text" value="あなたを構成する9人の美闘士" />
+            </div>
+            <div class="field">
+              <label for="tagInput">ハッシュタグ</label>
+              <input id="tagInput" type="text" value="#あなたを構成する9人の美闘士" />
+            </div>
+          </div>
+
+          <div class="section section-mobile-preview">
+            <h2>プレビュー</h2>
+            <div class="canvas-shell mobile-canvas-shell">
+              <div class="canvas mobile-canvas" id="exportTargetMobile">
+                <div class="canvas-header">
+                  <div class="eyebrow">QB COMMUNITY TEMPLATE</div>
+                  <div class="canvas-title" id="canvasTitleMobile">あなたを構成する9人の美闘士</div>
+                </div>
+                <div class="grid" id="gridMobile"></div>
+                <div class="canvas-footer">
+                  <div id="canvasTagMobile">#あなたを構成する9人の美闘士</div>
+                  <div class="muted">Template Maker</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section section-slots">
+            <h2>枠を選ぶ</h2>
+            <div class="controls" id="slotButtons"></div>
+            <div class="stat" id="selectedInfo">選択中: SLOT 1</div>
+            <div class="action-row">
+              <button class="secondary" id="clearSlotBtn">選択枠をクリア</button>
+              <button class="secondary" id="resetAllBtn">全部リセット</button>
+              <button class="secondary" id="randomFillBtn">ランダム編成</button>
+              <button class="secondary" id="copyUrlBtn">URLコピー</button>
+              <button class="primary" id="downloadBtn">PNG保存</button>
+            </div>
+          </div>
+
+          <div class="section section-library">
+            <div class="field">
+              <label for="searchInput">キャラ検索</label>
+              <input id="searchInput" type="text" placeholder="名前で検索" />
+            </div>
+
+            <div class="stat" id="libraryCount"></div>
+
+            <details class="library-details" open>
+              <summary>キャラ一覧を開く / 閉じる</summary>
+              <div class="library" id="library"></div>
+            </details>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel panel-preview-desktop">
+        <div class="canvas-shell">
+          <div class="canvas" id="exportTarget">
+            <div class="canvas-header">
+              <div class="eyebrow">QB COMMUNITY TEMPLATE</div>
+              <div class="canvas-title" id="canvasTitle">あなたを構成する9人の美闘士</div>
+            </div>
+            <div class="grid" id="grid"></div>
+            <div class="canvas-footer">
+              <div id="canvasTag">#あなたを構成する9人の美闘士</div>
+              <div class="muted">Template Maker</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    const CHARACTER_LIBRARY = [
+      { id: "reina", name: "レイナ", src: "assets/reina.jpg" },
+      { id: "risty", name: "リスティ", src: "assets/risty.jpg" },
+      { id: "irma", name: "イルマ", src: "assets/irma.jpg" },
+      { id: "nowa", name: "ノワ", src: "assets/nowa.jpg" },
+      { id: "tomoe", name: "トモエ", src: "assets/tomoe.jpg" },
+      { id: "echidna", name: "エキドナ", src: "assets/echidna.jpg" },
+      { id: "menace", name: "メナス", src: "assets/menace.jpg" },
+      { id: "elina", name: "エリナ", src: "assets/elina.jpg" },
+      { id: "airi", name: "アイリ", src: "assets/airi.jpg" },
+      { id: "nanael", name: "ナナエル", src: "assets/nanael.jpg" },
+      { id: "cattleya", name: "カトレア", src: "assets/cattleya.jpg" },
+      { id: "nyx", name: "ニクス", src: "assets/nyx.jpg" },
+      { id: "melpha", name: "メルファ", src: "assets/melpha.jpg" },
+      { id: "shizuka", name: "シズカ", src: "assets/shizuka.jpg" },
+      { id: "melona", name: "メローナ", src: "assets/melona.jpg" },
+      { id: "claudette", name: "クローデット", src: "assets/claudette.jpg" },
+      { id: "ymir", name: "ユーミル", src: "assets/ymir.jpg" },
+      { id: "alleyne", name: "アレイン", src: "assets/alleyne.jpg" },
+      { id: "aldra", name: "アルドラ", src: "assets/aldra.jpg" },
+      { id: "annelotte", name: "アンネロッテ", src: "assets/annelotte.jpg" },
+      { id: "yuit", name: "ユイット", src: "assets/yuit.jpg" },
+      { id: "vante", name: "ヴァンテ", src: "assets/vante.jpg" },
+      { id: "milim", name: "ミリム", src: "assets/milim.jpg" },
+      { id: "tarnyang", name: "ターニャン", src: "assets/tarnyang.jpg" },
+      { id: "sainyang", name: "サイニャン", src: "assets/sainyang.jpg" },
+      { id: "sigui", name: "シギィ", src: "assets/sigui.jpg" },
+      { id: "lunaluna", name: "ルナルナ", src: "assets/lunaluna.jpg" },
+      { id: "eilin", name: "エイリン", src: "assets/eilin.jpg" },
+      { id: "liliana", name: "リリアナ", src: "assets/liliana.jpg" },
+      { id: "branwen", name: "ブランウェン", src: "assets/branwen.jpg" },
+      { id: "laila", name: "ライラ", src: "assets/laila.jpg" },
+      { id: "izumi", name: "イズミ", src: "assets/izumi.jpg" },
+      { id: "welberia", name: "ウェルベリア", src: "assets/welberia.jpg" },
+      { id: "alicia", name: "アリシア", src: "assets/alicia.jpg" },
+      { id: "zara", name: "ザラ", src: "assets/zara.jpg" },
+      { id: "tina", name: "ティーナ", src: "assets/tina.jpg" },
+      { id: "goldie", name: "ゴールディー", src: "assets/goldie.jpg" },
+      { id: "gretel", name: "グレーテル", src: "assets/gretel.jpg" },
+      { id: "kaguya", name: "カグヤ", src: "assets/kaguya.jpg" },
+      { id: "seiten", name: "セイテン", src: "assets/seiten.jpg" },
+      { id: "despina", name: "デスピナ", src: "assets/despina.jpg" },
+      { id: "snow_white", name: "スノーホワイト", src: "assets/snow_white.jpg" },
+      { id: "cinderella", name: "シンデレラ", src: "assets/cinderella.jpg" }
+    ];
+
+    const characterMap = Object.fromEntries(
+      CHARACTER_LIBRARY.map((c) => [c.id, c])
+    );
+
+    const slots = Array.from({ length: 9 }, (_, i) => ({
+      index: i,
+      id: "",
+      name: "",
+      src: ""
+    }));
+
+    let selectedSlot = 0;
+
+    const slotButtonsEl = document.getElementById('slotButtons');
+    const selectedInfoEl = document.getElementById('selectedInfo');
+    const libraryEl = document.getElementById('library');
+    const gridEl = document.getElementById('grid');
+    const gridMobileEl = document.getElementById('gridMobile');
+    const searchInput = document.getElementById('searchInput');
+    const libraryCountEl = document.getElementById('libraryCount');
+
+    const titleInput = document.getElementById('titleInput');
+    const tagInput = document.getElementById('tagInput');
+
+    const canvasTitle = document.getElementById('canvasTitle');
+    const canvasTitleMobile = document.getElementById('canvasTitleMobile');
+
+    const canvasTag = document.getElementById('canvasTag');
+    const canvasTagMobile = document.getElementById('canvasTagMobile');
+
+    const clearSlotBtn = document.getElementById('clearSlotBtn');
+    const resetAllBtn = document.getElementById('resetAllBtn');
+    const copyUrlBtn = document.getElementById('copyUrlBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const randomFillBtn = document.getElementById('randomFillBtn');
+
+    function renderSlotButtons() {
+      slotButtonsEl.innerHTML = '';
+      slots.forEach((slot, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'slot-button' + (selectedSlot === idx ? ' active' : '');
+        btn.innerHTML = `<small>SLOT ${idx + 1}</small>${slot.name || '未設定'}`;
+        btn.onclick = () => {
+          selectedSlot = idx;
+          renderSlotButtons();
+          renderGrid();
+        };
+        slotButtonsEl.appendChild(btn);
+      });
+
+      selectedInfoEl.textContent =
+        `選択中: SLOT ${selectedSlot + 1}${slots[selectedSlot].name ? ' / ' + slots[selectedSlot].name : ''}`;
+    }
+
+    function renderLibrary() {
+      libraryEl.innerHTML = '';
+
+      const keyword = (searchInput?.value || '').trim().toLowerCase();
+
+      const filtered = CHARACTER_LIBRARY.filter((item) => {
+        if (!keyword) return true;
+
+        const nameJa = item.name.toLowerCase();
+        const id = item.id.toLowerCase();
+
+        return nameJa.includes(keyword) || id.includes(keyword);
+      });
+
+      libraryCountEl.textContent = `${filtered.length} / ${CHARACTER_LIBRARY.length} 件`;
+
+      if (filtered.length === 0) {
+        const empty = document.createElement('div');
+        empty.style.gridColumn = '1 / -1';
+        empty.style.padding = '18px';
+        empty.style.border = '1px solid var(--line)';
+        empty.style.borderRadius = '16px';
+        empty.style.background = 'rgba(255,255,255,.03)';
+        empty.style.color = 'var(--muted)';
+        empty.textContent = '該当するキャラが見つかりません';
+        libraryEl.appendChild(empty);
+        return;
+      }
+
+      filtered.forEach((item) => {
+        const div = document.createElement('div');
+        div.className = 'lib-item';
+        div.innerHTML = `<img src="${item.src}" alt="${item.name}"><div class="name">${item.name}</div>`;
+        div.onclick = () => {
+          applySlotById(selectedSlot, item.id);
+          renderSlotButtons();
+          renderGrid();
+          updateShareUrl();
+        };
+        libraryEl.appendChild(div);
+      });
+    }
+
+    function shuffleArray(array) {
+      const result = [...array];
+      for (let i = result.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+      return result;
+    }
+
+    function fillSlotsRandomly() {
+      const shuffled = shuffleArray(CHARACTER_LIBRARY);
+      const picked = shuffled.slice(0, slots.length);
+
+      picked.forEach((character, idx) => {
+        slots[idx] = {
+          ...slots[idx],
+          id: character.id,
+          name: character.name,
+          src: character.src
+        };
+      });
+
+      selectedSlot = 0;
+    }
+
+    function buildGrid(targetEl) {
+      if (!targetEl) return;
+      targetEl.innerHTML = '';
+
+      slots.forEach((slot, idx) => {
+        const cell = document.createElement('div');
+        cell.className = 'cell' + (selectedSlot === idx ? ' active' : '');
+        cell.onclick = () => {
+          selectedSlot = idx;
+          renderSlotButtons();
+          renderGrid();
+        };
+
+        if (slot.src) {
+          const img = document.createElement('img');
+          img.src = slot.src;
+          img.alt = slot.name || `slot-${idx + 1}`;
+          cell.appendChild(img);
+        } else {
+          const ph = document.createElement('div');
+          ph.className = 'placeholder';
+          ph.textContent = `SLOT ${idx + 1}`;
+          cell.appendChild(ph);
+        }
+
+        targetEl.appendChild(cell);
+      });
+    }
+
+    function renderGrid() {
+      buildGrid(gridEl);
+      buildGrid(gridMobileEl);
+    }
+
+    function applySlotById(slotIndex, characterId) {
+      const character = characterMap[characterId];
+      if (!character) return;
+
+      slots[slotIndex] = {
+        ...slots[slotIndex],
+        id: character.id,
+        name: character.name,
+        src: character.src
+      };
+    }
+
+    function updateShareUrl() {
+      const url = new URL(window.location.href);
+
+      const slotIds = slots.map((slot) => slot.id || "").join(",");
+      if (slotIds.replace(/,/g, "") === "") {
+        url.searchParams.delete("slots");
+      } else {
+        url.searchParams.set("slots", slotIds);
+      }
+
+      const title = titleInput.value.trim();
+      const tag = tagInput.value.trim();
+
+      if (title && title !== "あなたを構成する9人の美闘士") {
+        url.searchParams.set("title", title);
+      } else {
+        url.searchParams.delete("title");
+      }
+
+      if (tag && tag !== "#あなたを構成する9人の美闘士") {
+        url.searchParams.set("tag", tag);
+      } else {
+        url.searchParams.delete("tag");
+      }
+
+      history.replaceState(null, "", url.toString());
+    }
+
+    function loadFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+
+      const savedTitle = params.get("title");
+      const savedTag = params.get("tag");
+      const savedSlots = params.get("slots");
+
+      if (savedTitle !== null) {
+        titleInput.value = savedTitle;
+        const titleValue = savedTitle || "あなたを構成する9人の美闘士";
+        canvasTitle.textContent = titleValue;
+        if (canvasTitleMobile) canvasTitleMobile.textContent = titleValue;
+      }
+
+      if (savedTag !== null) {
+        tagInput.value = savedTag;
+        const tagValue = savedTag || "";
+        canvasTag.textContent = tagValue;
+        if (canvasTagMobile) canvasTagMobile.textContent = tagValue;
+      }
+
+      if (savedSlots) {
+        const ids = savedSlots.split(",");
+        ids.slice(0, 9).forEach((id, idx) => {
+          if (id && characterMap[id]) {
+            applySlotById(idx, id);
+          }
+        });
+      }
+    }
+
+    async function copyShareUrl() {
+      updateShareUrl();
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        alert("共有URLをコピーしました");
+      } catch (error) {
+        alert("URLのコピーに失敗しました");
+      }
+    }
+
+    titleInput.addEventListener('input', () => {
+      const value = titleInput.value || 'あなたを構成する9人の美闘士';
+      canvasTitle.textContent = value;
+      if (canvasTitleMobile) canvasTitleMobile.textContent = value;
+      updateShareUrl();
+    });
+
+    tagInput.addEventListener('input', () => {
+      const value = tagInput.value || '';
+      canvasTag.textContent = value;
+      if (canvasTagMobile) canvasTagMobile.textContent = value;
+      updateShareUrl();
+    });
+
+    searchInput.addEventListener('input', () => {
+      renderLibrary();
+    });
+
+    clearSlotBtn.onclick = () => {
+      slots[selectedSlot] = { ...slots[selectedSlot], id: '', name: '', src: '' };
+      renderSlotButtons();
+      renderGrid();
+      updateShareUrl();
+    };
+
+    resetAllBtn.onclick = () => {
+      for (let i = 0; i < slots.length; i++) {
+        slots[i] = { index: i, id: '', name: '', src: '' };
+      }
+
+      selectedSlot = 0;
+      titleInput.value = 'あなたを構成する9人の美闘士';
+      tagInput.value = '#あなたを構成する9人の美闘士';
+
+      canvasTitle.textContent = titleInput.value;
+      if (canvasTitleMobile) canvasTitleMobile.textContent = titleInput.value;
+
+      canvasTag.textContent = tagInput.value;
+      if (canvasTagMobile) canvasTagMobile.textContent = tagInput.value;
+
+      renderSlotButtons();
+      renderLibrary();
+      renderGrid();
+      updateShareUrl();
+    };
+
+    copyUrlBtn.onclick = copyShareUrl;
+
+    randomFillBtn.onclick = () => {
+      fillSlotsRandomly();
+      renderSlotButtons();
+      renderGrid();
+      updateShareUrl();
+    };
+
+    async function waitForImages(container) {
+      const images = Array.from(container.querySelectorAll('img'));
+
+      await Promise.all(
+        images.map((img) => {
+          if (img.complete && img.naturalWidth > 0) {
+            return Promise.resolve();
+          }
+
+          return new Promise((resolve) => {
+            const done = () => {
+              img.removeEventListener('load', done);
+              img.removeEventListener('error', done);
+              resolve();
+            };
+            img.addEventListener('load', done);
+            img.addEventListener('error', done);
+          });
+        })
+      );
+    }
+
+    downloadBtn.onclick = async () => {
+      const target = document.getElementById('exportTarget');
+
+      try {
+        await waitForImages(target);
+
+        const canvas = await html2canvas(target, {
+          backgroundColor: null,
+          scale: 2,
+          useCORS: true,
+          allowTaint: false
+        });
+
+        const a = document.createElement('a');
+        a.href = canvas.toDataURL('image/png');
+        a.download = 'qb-9girls-template.png';
+        a.click();
+      } catch (error) {
+        console.error(error);
+        alert('PNG保存に失敗しました。画像の読み込み状態を確認してください。');
+      }
+    };
+
+    loadFromUrl();
+    renderSlotButtons();
+    renderLibrary();
+    renderGrid();
+    updateShareUrl();
+  </script>
+</body>
+</html>
