@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>私を構成する9人の美闘士メーカー</title>
   <style>
+
+<!-- 基本変数 -->
+
     :root {
       --bg: #0f0b16;
       --panel: #171221;
@@ -36,6 +39,9 @@
       padding: 24px;
     }
 
+    
+<!-- サイトの説明文 -->
+    
     .hero {
       margin-bottom: 20px;
     }
@@ -50,6 +56,9 @@
       color: var(--muted);
       line-height: 1.7;
     }
+
+
+<!-- 2カラムレイアウト -->
 
     .layout {
       display: grid;
@@ -105,6 +114,9 @@
       outline: none;
     }
 
+
+<!-- キャラ一覧 --> 
+
     .library {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -145,6 +157,9 @@
       text-overflow: ellipsis;
     }
 
+
+<!-- 枠選択ボタン -->
+
     .controls {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -174,6 +189,9 @@
       margin-bottom: 4px;
     }
 
+
+<!-- 操作ボタン列 -->
+
     .action-row {
       display: flex;
       gap: 10px;
@@ -199,6 +217,9 @@
       color: var(--text);
       border: 1px solid var(--line);
     }
+
+
+<!-- プレビューキャンパス -->
 
     .canvas-shell {
       padding: 10px;
@@ -269,6 +290,9 @@
       letter-spacing: .2em;
       color: #c4b9de;
     }
+
+
+<!-- 3x3グリッド -->
 
     .grid {
       position: absolute;
@@ -345,9 +369,21 @@
       display: none;
     }
 
+    .credit {
+      margin-top: 16px;
+      padding: 16px 4px 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.8;
+      text-align: center;
+    }
+
     .library-details[open] summary {
       margin-bottom: 12px;
     }
+
+
+<!-- タブレット以下 -->
 
     @media (max-width: 900px) {
       .wrap {
@@ -533,6 +569,9 @@
       }
     }
 
+
+<!-- スマホ用UI -->
+
     @media (max-width: 600px) {
       .wrap {
         padding: 8px;
@@ -625,17 +664,26 @@
   </style>
 </head>
 <body>
+
+<!-- サイト説明 -->
+
   <div class="wrap">
     <div class="hero">
       <h1>私を構成する9人の美闘士メーカー</h1>
       <p>
-        左の画像一覧からキャラを選び、選択中の枠に入れてください。最後にPNGとして保存できます。
+        画像一覧からキャラを選び、選択中の枠に入れてください。最後にPNGとして保存できます。
       </p>
     </div>
 
     <div class="layout">
+
+<!-- 左側：操作パネル --> 
+
       <div class="panel panel-controls">
         <div class="panel-inner">
+
+          <!-- スマホ用プレビュー -->
+
           <div class="section section-mobile-preview">
             <h2>プレビュー</h2>
             <div class="canvas-shell mobile-canvas-shell">
@@ -653,6 +701,9 @@
             </div>
           </div>
 
+
+          <!-- 枠選択 -->
+
           <div class="section section-slots">
             <h2>枠を選ぶ</h2>
             <div class="controls" id="slotButtons"></div>
@@ -665,6 +716,9 @@
               <button class="primary" id="downloadBtn">画像を書き出す</button>
             </div>
           </div>
+
+
+          <!-- キャラ検索と一覧 -->
 
           <div class="section section-library">
             <h2>キャラ検索</h2>
@@ -679,6 +733,9 @@
           </div>
         </div>
       </div>
+
+
+      <!-- 右側：デスクトップ用プレビュー -->
 
       <div class="panel panel-preview-desktop">
         <div class="canvas-shell">
@@ -698,11 +755,18 @@
     </div>
   </div>
 
+  <!-- html2canvas -->
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
   <script>
+
+<!-- ハッシュタグ等 -->
+
     const FIXED_TITLE = '私を構成する9人の美闘士';
     const FIXED_TAG_PRIMARY = '#私を構成する9人の美闘士';
     const FIXED_TAG_SECONDARY = '#My9QBwarriors';
+
+<!-- キャラ一覧 -->
 
     const CHARACTER_LIBRARY = [
       { id: "reina", name: "レイナ", src: "assets/reina.jpg" },
@@ -750,14 +814,17 @@
       { id: "cinderella", name: "シンデレラ", src: "assets/cinderella.jpg" }
     ];
 
+    /* id → キャラ情報 */
     const characterMap = Object.fromEntries(
       CHARACTER_LIBRARY.map((c) => [c.id, c])
     );
 
+    /* id → 配列上の番号（短縮URL用） */
     const characterIndexMap = Object.fromEntries(
       CHARACTER_LIBRARY.map((c, i) => [c.id, i])
     );
 
+    /* 9枠の状態 */
     const slots = Array.from({ length: 9 }, (_, i) => ({
       index: i,
       id: "",
@@ -766,6 +833,9 @@
     }));
 
     let selectedSlot = 0;
+
+
+<!-- DOM参照 -->
 
     const slotButtonsEl = document.getElementById('slotButtons');
     const selectedInfoEl = document.getElementById('selectedInfo');
@@ -784,6 +854,9 @@
     const downloadBtn = document.getElementById('downloadBtn');
     const randomFillBtn = document.getElementById('randomFillBtn');
 
+
+<!-- ハッシュタグ等反映 -->
+
     function applyFixedText() {
       document.title = FIXED_TITLE + 'メーカー';
       canvasTitle.textContent = FIXED_TITLE;
@@ -794,23 +867,32 @@
       if (canvasTagMobile) canvasTagMobile.textContent = footerTag;
     }
 
+
+<!-- 枠ボタンの描画 -->
+
     function renderSlotButtons() {
       slotButtonsEl.innerHTML = '';
+
       slots.forEach((slot, idx) => {
         const btn = document.createElement('button');
         btn.className = 'slot-button' + (selectedSlot === idx ? ' active' : '');
         btn.innerHTML = `<small>SLOT ${idx + 1}</small>${slot.name || '未設定'}`;
+
         btn.onclick = () => {
           selectedSlot = idx;
           renderSlotButtons();
           renderGrid();
         };
+
         slotButtonsEl.appendChild(btn);
       });
 
       selectedInfoEl.textContent =
         `選択中: SLOT ${selectedSlot + 1}${slots[selectedSlot].name ? ' / ' + slots[selectedSlot].name : ''}`;
     }
+
+
+<!-- キャラ一覧の描画 -->
 
     function renderLibrary() {
       libraryEl.innerHTML = '';
@@ -841,15 +923,20 @@
         const div = document.createElement('div');
         div.className = 'lib-item';
         div.innerHTML = `<img src="${item.src}" alt="${item.name}"><div class="name">${item.name}</div>`;
+
         div.onclick = () => {
           applySlotById(selectedSlot, item.id);
           renderSlotButtons();
           renderGrid();
           updateShareUrl();
         };
+
         libraryEl.appendChild(div);
       });
     }
+
+
+<!-- 配列シャッフル -->
 
     function shuffleArray(array) {
       const result = [...array];
@@ -859,6 +946,9 @@
       }
       return result;
     }
+
+
+<!-- ランダム編成 -->
 
     function fillSlotsRandomly() {
       const shuffled = shuffleArray(CHARACTER_LIBRARY);
@@ -876,6 +966,9 @@
       selectedSlot = 0;
     }
 
+
+<!-- グリッド描画 -->
+
     function buildGrid(targetEl) {
       if (!targetEl) return;
       targetEl.innerHTML = '';
@@ -883,6 +976,7 @@
       slots.forEach((slot, idx) => {
         const cell = document.createElement('div');
         cell.className = 'cell' + (selectedSlot === idx ? ' active' : '');
+
         cell.onclick = () => {
           selectedSlot = idx;
           renderSlotButtons();
@@ -910,6 +1004,9 @@
       buildGrid(gridMobileEl);
     }
 
+
+<!-- 枠にキャラをセットする -->
+
     function applySlotById(slotIndex, characterId) {
       const character = characterMap[characterId];
       if (!character) return;
@@ -921,6 +1018,9 @@
         src: character.src
       };
     }
+
+
+<!-- URL更新 -->
 
     function updateShareUrl() {
       const url = new URL(window.location.href);
@@ -939,12 +1039,16 @@
         url.searchParams.set('c', compactSlots);
       }
 
+      /* 旧形式や未使用パラメータは消す */
       url.searchParams.delete('slots');
       url.searchParams.delete('title');
       url.searchParams.delete('tag');
 
       history.replaceState(null, '', url.toString());
     }
+
+
+<!-- URLからの状態復元 -->
 
     function loadFromUrl() {
       const params = new URLSearchParams(window.location.search);
@@ -978,6 +1082,9 @@
       }
     }
 
+
+<!-- 投稿文のコピー -->
+
     async function copyShareUrl() {
       updateShareUrl();
 
@@ -995,6 +1102,9 @@
         alert('コピーに失敗しました');
       }
     }
+
+
+<!-- 画像読み込み待ち -->
 
     async function waitForImages(container) {
       const images = Array.from(container.querySelectorAll('img'));
@@ -1018,17 +1128,26 @@
       );
     }
 
+
+<!-- iPhone / iPad系判定 -->
+
     function isIOSLike() {
       const ua = navigator.userAgent;
       const touchMac = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
       return /iPhone|iPad|iPod/.test(ua) || touchMac;
     }
 
+    /* =========================
+       canvas → Blob
+    ========================= */
     function canvasToBlob(canvas, type = 'image/png', quality = 1) {
       return new Promise((resolve) => {
         canvas.toBlob((blob) => resolve(blob), type, quality);
       });
     }
+
+
+<!-- 書き出し用canvas生成 -->
 
     async function renderExportCanvas(target, scaleValue) {
       return await html2canvas(target, {
@@ -1055,6 +1174,9 @@
         }
       });
     }
+
+
+<!-- イベント登録 -->
 
     searchInput.addEventListener('input', () => {
       renderLibrary();
@@ -1088,6 +1210,9 @@
       renderGrid();
       updateShareUrl();
     };
+
+
+<!-- PNG書き出し -->
 
     downloadBtn.onclick = async () => {
       const desktopPanel = document.querySelector('.panel-preview-desktop');
@@ -1137,6 +1262,7 @@
 
         const objectUrl = URL.createObjectURL(blob);
 
+        /* iPhone系は新規タブで開いて保存させる */
         if (isIOSLike()) {
           const opened = window.open(objectUrl, '_blank');
 
@@ -1152,6 +1278,7 @@
           return;
         }
 
+        /* PC系はそのままダウンロード */
         const a = document.createElement('a');
         a.href = objectUrl;
         a.download = 'qb-9girls-template.png';
@@ -1178,11 +1305,23 @@
       }
     };
 
+
+<!-- 初期化 -->
+
     loadFromUrl();
     renderSlotButtons();
     renderLibrary();
     renderGrid();
     updateShareUrl();
   </script>
+
+<!-- クレジット -->
+
+  <div class="wrap">
+    <div class="credit">
+      <div>作者：@Parker33206365</div>
+      <div>画像：©︎HobbyJAPAN Co.,Ltd</div>
+    </div>
+  </div>
 </body>
 </html>
