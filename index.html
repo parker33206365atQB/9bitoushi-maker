@@ -137,8 +137,18 @@
     }
 
     .lib-item .name {
-      padding: 8px;
+      padding: 8px 8px 2px;
       font-size: 12px;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .lib-item .alias {
+      padding: 0 8px 8px;
+      font-size: 10px;
+      color: var(--muted);
       text-align: center;
       white-space: nowrap;
       overflow: hidden;
@@ -449,7 +459,12 @@
 
       .lib-item .name {
         font-size: 10px;
-        padding: 5px;
+        padding: 5px 5px 1px;
+      }
+
+      .lib-item .alias {
+        font-size: 9px;
+        padding: 0 5px 5px;
       }
 
       input[type="text"] {
@@ -592,7 +607,12 @@
 
       .lib-item .name {
         font-size: 9px;
-        padding: 4px;
+        padding: 4px 4px 1px;
+      }
+
+      .lib-item .alias {
+        font-size: 8px;
+        padding: 0 4px 4px;
       }
 
       .mobile-canvas {
@@ -677,11 +697,11 @@
 
           <div class="section section-library">
             <h2>キャラ検索</h2>
-            <input id="searchInput" type="text" placeholder="名前で検索" />
+            <input id="searchInput" type="text" placeholder="名前・二つ名で検索" />
 
             <div class="stat" id="libraryCount"></div>
 
-            <details class="library-details" open>
+            <details class="library-details" id="libraryDetails">
               <summary>キャラ一覧を開く / 閉じる</summary>
               <div class="library" id="library"></div>
             </details>
@@ -714,49 +734,264 @@
     const FIXED_TAG_SECONDARY = '#My9QBwarriors';
 
     const CHARACTER_LIBRARY = [
-      { id: "reina", name: "レイナ", src: "assets/reina.jpg" },
-      { id: "risty", name: "リスティ", src: "assets/risty.jpg" },
-      { id: "irma", name: "イルマ", src: "assets/irma.jpg" },
-      { id: "nowa", name: "ノワ", src: "assets/nowa.jpg" },
-      { id: "tomoe", name: "トモエ", src: "assets/tomoe.jpg" },
-      { id: "echidna", name: "エキドナ", src: "assets/echidna.jpg" },
-      { id: "menace", name: "メナス", src: "assets/menace.jpg" },
-      { id: "elina", name: "エリナ", src: "assets/elina.jpg" },
-      { id: "airi", name: "アイリ", src: "assets/airi.jpg" },
-      { id: "nanael", name: "ナナエル", src: "assets/nanael.jpg" },
-      { id: "cattleya", name: "カトレア", src: "assets/cattleya.jpg" },
-      { id: "nyx", name: "ニクス", src: "assets/nyx.jpg" },
-      { id: "melpha", name: "メルファ", src: "assets/melpha.jpg" },
-      { id: "shizuka", name: "シズカ", src: "assets/shizuka.jpg" },
-      { id: "melona", name: "メローナ", src: "assets/melona.jpg" },
-      { id: "claudette", name: "クローデット", src: "assets/claudette.jpg" },
-      { id: "ymir", name: "ユーミル", src: "assets/ymir.jpg" },
-      { id: "alleyne", name: "アレイン", src: "assets/alleyne.jpg" },
-      { id: "aldra", name: "アルドラ", src: "assets/aldra.jpg" },
-      { id: "annelotte", name: "アンネロッテ", src: "assets/annelotte.jpg" },
-      { id: "yuit", name: "ユイット", src: "assets/yuit.jpg" },
-      { id: "vante", name: "ヴァンテ", src: "assets/vante.jpg" },
-      { id: "milim", name: "ミリム", src: "assets/milim.jpg" },
-      { id: "tarnyang", name: "ターニャン", src: "assets/tarnyang.jpg" },
-      { id: "sainyang", name: "サイニャン", src: "assets/sainyang.jpg" },
-      { id: "sigui", name: "シギィ", src: "assets/sigui.jpg" },
-      { id: "lunaluna", name: "ルナルナ", src: "assets/lunaluna.jpg" },
-      { id: "eilin", name: "エイリン", src: "assets/eilin.jpg" },
-      { id: "liliana", name: "リリアナ", src: "assets/liliana.jpg" },
-      { id: "branwen", name: "ブランウェン", src: "assets/branwen.jpg" },
-      { id: "laila", name: "ライラ", src: "assets/laila.jpg" },
-      { id: "izumi", name: "イズミ", src: "assets/izumi.jpg" },
-      { id: "welberia", name: "ウェルベリア", src: "assets/welberia.jpg" },
-      { id: "alicia", name: "アリシア", src: "assets/alicia.jpg" },
-      { id: "zara", name: "ザラ", src: "assets/zara.jpg" },
-      { id: "tina", name: "ティーナ", src: "assets/tina.jpg" },
-      { id: "goldie", name: "ゴールディー", src: "assets/goldie.jpg" },
-      { id: "gretel", name: "グレーテル", src: "assets/gretel.jpg" },
-      { id: "kaguya", name: "カグヤ", src: "assets/kaguya.jpg" },
-      { id: "seiten", name: "セイテン", src: "assets/seiten.jpg" },
-      { id: "despina", name: "デスピナ", src: "assets/despina.jpg" },
-      { id: "snow_white", name: "スノーホワイト", src: "assets/snow_white.jpg" },
-      { id: "cinderella", name: "シンデレラ", src: "assets/cinderella.jpg" }
+      {
+        id: "reina",
+        name: "レイナ",
+        src: "assets/reina.jpg",
+        keywords: ["レイナ", "reina", "流浪の戦士", "幻影の戦士"]
+      },
+      {
+        id: "risty",
+        name: "リスティ",
+        src: "assets/risty.jpg",
+        keywords: ["リスティ", "risty", "荒野の義賊", "牙を統べる者", "不屈の闘士"]
+      },
+      {
+        id: "irma",
+        name: "イルマ",
+        src: "assets/irma.jpg",
+        keywords: ["イルマ", "irma", "牙の暗殺者"]
+      },
+      {
+        id: "nowa",
+        name: "ノワ",
+        src: "assets/nowa.jpg",
+        keywords: ["ノワ", "nowa", "森の番人", "深き森の番人"]
+      },
+      {
+        id: "tomoe",
+        name: "トモエ",
+        src: "assets/tomoe.jpg",
+        keywords: ["トモエ", "tomoe", "武者巫女", "剣聖巫女"]
+      },
+      {
+        id: "echidna",
+        name: "エキドナ",
+        src: "assets/echidna.jpg",
+        keywords: ["エキドナ", "echidna", "歴戦の傭兵"]
+      },
+      {
+        id: "menace",
+        name: "メナス",
+        src: "assets/menace.jpg",
+        keywords: ["メナス", "menace", "古代の王女"]
+      },
+      {
+        id: "elina",
+        name: "エリナ",
+        src: "assets/elina.jpg",
+        keywords: ["エリナ", "elina", "近衛隊長", "牙を統べる者", "絶影の追跡者"]
+      },
+      {
+        id: "airi",
+        name: "アイリ",
+        src: "assets/airi.jpg",
+        keywords: ["アイリ", "airi", "冥土へ誘うもの"]
+      },
+      {
+        id: "nanael",
+        name: "ナナエル",
+        src: "assets/nanael.jpg",
+        keywords: ["ナナエル", "nanael", "光明の天使", "審判の天使"]
+      },
+      {
+        id: "cattleya",
+        name: "カトレア",
+        src: "assets/cattleya.jpg",
+        keywords: ["カトレア", "cattleya", "武器屋"]
+      },
+      {
+        id: "nyx",
+        name: "ニクス",
+        src: "assets/nyx.jpg",
+        keywords: ["ニクス", "nyx", "炎の使い手"]
+      },
+      {
+        id: "melpha",
+        name: "メルファ",
+        src: "assets/melpha.jpg",
+        keywords: ["メルファ", "melpha", "帝都の聖女", "光輝の聖女"]
+      },
+      {
+        id: "shizuka",
+        name: "シズカ",
+        src: "assets/shizuka.jpg",
+        keywords: ["シズカ", "shizuka", "甲魔忍軍統領"]
+      },
+      {
+        id: "melona",
+        name: "メローナ",
+        src: "assets/melona.jpg",
+        keywords: ["メローナ", "melona", "千変の刺客", "千変の謀略者"]
+      },
+      {
+        id: "claudette",
+        name: "クローデット",
+        src: "assets/claudette.jpg",
+        keywords: ["クローデット", "claudette", "雷雲の将", "雷雲の女王"]
+      },
+      {
+        id: "ymir",
+        name: "ユーミル",
+        src: "assets/ymir.jpg",
+        keywords: ["ユーミル", "ymir", "鋼鉄姫", "鋼鉄参謀"]
+      },
+      {
+        id: "alleyne",
+        name: "アレイン",
+        src: "assets/alleyne.jpg",
+        keywords: ["アレイン", "alleyne", "戦闘教官"]
+      },
+      {
+        id: "aldra",
+        name: "アルドラ",
+        src: "assets/aldra.jpg",
+        keywords: ["アルドラ", "aldra", "逢魔の女王", "召喚士"]
+      },
+      {
+        id: "annelotte",
+        name: "アンネロッテ",
+        src: "assets/annelotte.jpg",
+        keywords: ["アンネロッテ", "annelotte", "叛乱の騎士姫"]
+      },
+      {
+        id: "yuit",
+        name: "ユイット",
+        src: "assets/yuit.jpg",
+        keywords: ["ユイット", "yuit", "錬金軍師"]
+      },
+      {
+        id: "vante",
+        name: "ヴァンテ",
+        src: "assets/vante.jpg",
+        keywords: ["ヴァンテ", "vante", "錬金鋼人"]
+      },
+      {
+        id: "milim",
+        name: "ミリム",
+        src: "assets/milim.jpg",
+        keywords: ["ミリム", "milim", "超振動戦乙女"]
+      },
+      {
+        id: "tarnyang",
+        name: "ターニャン",
+        src: "assets/tarnyang.jpg",
+        keywords: ["ターニャン", "tarnyang", "対魔師"]
+      },
+      {
+        id: "sainyang",
+        name: "サイニャン",
+        src: "assets/sainyang.jpg",
+        keywords: ["サイニャン", "sainyang", "対魔師"]
+      },
+      {
+        id: "sigui",
+        name: "シギィ",
+        src: "assets/sigui.jpg",
+        keywords: ["シギィ", "sigui", "異端審問官"]
+      },
+      {
+        id: "lunaluna",
+        name: "ルナルナ",
+        src: "assets/lunaluna.jpg",
+        keywords: ["ルナルナ", "lunaluna", "月影の踊り手", "太陽の踊り手"]
+      },
+      {
+        id: "eilin",
+        name: "エイリン",
+        src: "assets/eilin.jpg",
+        keywords: ["エイリン", "eilin", "宝石姫"]
+      },
+      {
+        id: "liliana",
+        name: "リリアナ",
+        src: "assets/liliana.jpg",
+        keywords: ["リリアナ", "liliana", "大海賊", "キャプテン", "キャプテン・リリアナ", "大海賊リリアナ"]
+      },
+      {
+        id: "branwen",
+        name: "ブランウェン",
+        src: "assets/branwen.jpg",
+        keywords: ["ブランウェン", "branwen", "囚われの竜戦士"]
+      },
+      {
+        id: "laila",
+        name: "ライラ",
+        src: "assets/laila.jpg",
+        keywords: ["ライラ", "laila", "神罰の執行者"]
+      },
+      {
+        id: "izumi",
+        name: "イズミ",
+        src: "assets/izumi.jpg",
+        keywords: ["イズミ", "izumi", "戦神の侍"]
+      },
+      {
+        id: "welberia",
+        name: "ウェルベリア",
+        src: "assets/welberia.jpg",
+        keywords: ["ウェルベリア", "welberia", "沼地の魔女"]
+      },
+      {
+        id: "alicia",
+        name: "アリシア",
+        src: "assets/alicia.jpg",
+        keywords: ["アリシア", "alicia", "不思議の国の闇使い"]
+      },
+      {
+        id: "zara",
+        name: "ザラ",
+        src: "assets/zara.jpg",
+        keywords: ["ザラ", "zara", "赤頭巾の魔狩人"]
+      },
+      {
+        id: "tina",
+        name: "ティーナ",
+        src: "assets/tina.jpg",
+        keywords: ["ティーナ", "tina", "人魚姫"]
+      },
+      {
+        id: "goldie",
+        name: "ゴールディー",
+        src: "assets/goldie.jpg",
+        keywords: ["ゴールディー", "goldie", "黄金の戦斧"]
+      },
+      {
+        id: "gretel",
+        name: "グレーテル",
+        src: "assets/gretel.jpg",
+        keywords: ["グレーテル", "gretel", "魔女討ちの菓子職人"]
+      },
+      {
+        id: "kaguya",
+        name: "カグヤ",
+        src: "assets/kaguya.jpg",
+        keywords: ["カグヤ", "kaguya", "魔装剣姫"]
+      },
+      {
+        id: "seiten",
+        name: "セイテン",
+        src: "assets/seiten.jpg",
+        keywords: ["セイテン", "seiten", "妖猿の屍術師"]
+      },
+      {
+        id: "despina",
+        name: "デスピナ",
+        src: "assets/despina.jpg",
+        keywords: ["デスピナ", "despina", "ハーレムの笛吹き"]
+      },
+      {
+        id: "snow_white",
+        name: "スノーホワイト",
+        src: "assets/snow_white.jpg",
+        keywords: ["スノーホワイト", "snow_white", "鏡の魔術姫"]
+      },
+      {
+        id: "cinderella",
+        name: "シンデレラ",
+        src: "assets/cinderella.jpg",
+        keywords: ["シンデレラ", "cinderella", "冬の魔王"]
+      }
     ];
 
     const characterMap = Object.fromEntries(
@@ -783,6 +1018,7 @@
     const gridMobileEl = document.getElementById('gridMobile');
     const searchInput = document.getElementById('searchInput');
     const libraryCountEl = document.getElementById('libraryCount');
+    const libraryDetailsEl = document.getElementById('libraryDetails');
     const canvasTitle = document.getElementById('canvasTitle');
     const canvasTitleMobile = document.getElementById('canvasTitleMobile');
     const canvasTag = document.getElementById('canvasTag');
@@ -821,6 +1057,13 @@
         `選択中: SLOT ${selectedSlot + 1}${slots[selectedSlot].name ? ' / ' + slots[selectedSlot].name : ''}`;
     }
 
+    function getPrimaryAlias(item) {
+      const aliases = (item.keywords || []).filter(
+        (k) => k !== item.name && k !== item.id && k !== item.id.replace('_', ' ')
+      );
+      return aliases[0] || '';
+    }
+
     function renderLibrary() {
       libraryEl.innerHTML = '';
 
@@ -828,7 +1071,14 @@
 
       const filtered = CHARACTER_LIBRARY.filter((item) => {
         if (!keyword) return true;
-        return item.name.toLowerCase().includes(keyword) || item.id.toLowerCase().includes(keyword);
+
+        const searchableText = [
+          item.name || '',
+          item.id || '',
+          ...(item.keywords || [])
+        ].join(' ').toLowerCase();
+
+        return searchableText.includes(keyword);
       });
 
       libraryCountEl.textContent = `${filtered.length} / ${CHARACTER_LIBRARY.length} 件`;
@@ -849,7 +1099,11 @@
       filtered.forEach((item) => {
         const div = document.createElement('div');
         div.className = 'lib-item';
-        div.innerHTML = `<img src="${item.src}" alt="${item.name}"><div class="name">${item.name}</div>`;
+        div.innerHTML = `
+          <img src="${item.src}" alt="${item.name}">
+          <div class="name">${item.name}</div>
+          <div class="alias">${getPrimaryAlias(item)}</div>
+        `;
         div.onclick = () => {
           applySlotById(selectedSlot, item.id);
           renderSlotButtons();
@@ -1066,6 +1320,12 @@
     }
 
     searchInput.addEventListener('input', () => {
+      const keyword = searchInput.value.trim();
+
+      if (keyword && libraryDetailsEl && !libraryDetailsEl.open) {
+        libraryDetailsEl.open = true;
+      }
+
       renderLibrary();
     });
 
@@ -1082,6 +1342,11 @@
       }
 
       selectedSlot = 0;
+      searchInput.value = '';
+      if (libraryDetailsEl) {
+        libraryDetailsEl.open = false;
+      }
+
       applyFixedText();
       renderSlotButtons();
       renderLibrary();
@@ -1200,6 +1465,5 @@
       <div>画像：©︎HobbyJAPAN Co.,Ltd</div>
     </div>
   </div>
-
 </body>
 </html>
