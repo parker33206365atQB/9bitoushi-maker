@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>私を構成する9人の美闘士メーカー</title>
   <style>
-
-<!-- 基本変数 -->
-
+    /* =========================
+       基本変数
+    ========================= */
     :root {
       --bg: #0f0b16;
       --panel: #171221;
@@ -39,9 +39,9 @@
       padding: 24px;
     }
 
-    
-<!-- サイトの説明文 -->
-    
+    /* =========================
+       上部説明
+    ========================= */
     .hero {
       margin-bottom: 20px;
     }
@@ -57,9 +57,9 @@
       line-height: 1.7;
     }
 
-
-<!-- 2カラムレイアウト -->
-
+    /* =========================
+       2カラムレイアウト
+    ========================= */
     .layout {
       display: grid;
       grid-template-columns: 420px 1fr;
@@ -114,9 +114,9 @@
       outline: none;
     }
 
-
-<!-- キャラ一覧 --> 
-
+    /* =========================
+       キャラ一覧
+    ========================= */
     .library {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -157,9 +157,9 @@
       text-overflow: ellipsis;
     }
 
-
-<!-- 枠選択ボタン -->
-
+    /* =========================
+       枠選択ボタン
+    ========================= */
     .controls {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -189,9 +189,9 @@
       margin-bottom: 4px;
     }
 
-
-<!-- 操作ボタン列 -->
-
+    /* =========================
+       操作ボタン列
+    ========================= */
     .action-row {
       display: flex;
       gap: 10px;
@@ -218,9 +218,9 @@
       border: 1px solid var(--line);
     }
 
-
-<!-- プレビューキャンパス -->
-
+    /* =========================
+       プレビューキャンバス
+    ========================= */
     .canvas-shell {
       padding: 10px;
     }
@@ -291,9 +291,9 @@
       color: #c4b9de;
     }
 
-
-<!-- 3x3グリッド -->
-
+    /* =========================
+       3x3 グリッド
+    ========================= */
     .grid {
       position: absolute;
       left: 50%;
@@ -382,9 +382,9 @@
       margin-bottom: 12px;
     }
 
-
-<!-- タブレット以下 -->
-
+    /* =========================
+       タブレット以下
+    ========================= */
     @media (max-width: 900px) {
       .wrap {
         padding: 10px;
@@ -569,9 +569,9 @@
       }
     }
 
-
-<!-- スマホ用UI -->
-
+    /* =========================
+       スマホ
+    ========================= */
     @media (max-width: 600px) {
       .wrap {
         padding: 8px;
@@ -664,9 +664,9 @@
   </style>
 </head>
 <body>
-
-<!-- サイト説明 -->
-
+  <!-- =========================
+       ページ上部
+  ========================= -->
   <div class="wrap">
     <div class="hero">
       <h1>私を構成する9人の美闘士メーカー</h1>
@@ -676,14 +676,12 @@
     </div>
 
     <div class="layout">
-
-<!-- 左側：操作パネル --> 
-
+      <!-- =========================
+           左側：操作パネル
+      ========================= -->
       <div class="panel panel-controls">
         <div class="panel-inner">
-
           <!-- スマホ用プレビュー -->
-
           <div class="section section-mobile-preview">
             <h2>プレビュー</h2>
             <div class="canvas-shell mobile-canvas-shell">
@@ -701,9 +699,7 @@
             </div>
           </div>
 
-
           <!-- 枠選択 -->
-
           <div class="section section-slots">
             <h2>枠を選ぶ</h2>
             <div class="controls" id="slotButtons"></div>
@@ -717,9 +713,7 @@
             </div>
           </div>
 
-
           <!-- キャラ検索と一覧 -->
-
           <div class="section section-library">
             <h2>キャラ検索</h2>
             <input id="searchInput" type="text" placeholder="名前で検索" />
@@ -734,9 +728,9 @@
         </div>
       </div>
 
-
-      <!-- 右側：デスクトップ用プレビュー -->
-
+      <!-- =========================
+           右側：デスクトップ用プレビュー
+      ========================= -->
       <div class="panel panel-preview-desktop">
         <div class="canvas-shell">
           <div class="canvas" id="exportTarget">
@@ -759,15 +753,17 @@
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <script>
-
-<!-- ハッシュタグ等 -->
-
+    /* =========================
+       固定文言
+    ========================= */
     const FIXED_TITLE = '私を構成する9人の美闘士';
     const FIXED_TAG_PRIMARY = '#私を構成する9人の美闘士';
     const FIXED_TAG_SECONDARY = '#My9QBwarriors';
 
-<!-- キャラ一覧 -->
-
+    /* =========================
+       キャラ一覧
+       並び順が短縮URLの番号にも使われる
+    ========================= */
     const CHARACTER_LIBRARY = [
       { id: "reina", name: "レイナ", src: "assets/reina.jpg" },
       { id: "risty", name: "リスティ", src: "assets/risty.jpg" },
@@ -834,9 +830,9 @@
 
     let selectedSlot = 0;
 
-
-<!-- DOM参照 -->
-
+    /* =========================
+       DOM参照
+    ========================= */
     const slotButtonsEl = document.getElementById('slotButtons');
     const selectedInfoEl = document.getElementById('selectedInfo');
     const libraryEl = document.getElementById('library');
@@ -854,9 +850,9 @@
     const downloadBtn = document.getElementById('downloadBtn');
     const randomFillBtn = document.getElementById('randomFillBtn');
 
-
-<!-- ハッシュタグ等反映 -->
-
+    /* =========================
+       固定タイトル・固定タグ反映
+    ========================= */
     function applyFixedText() {
       document.title = FIXED_TITLE + 'メーカー';
       canvasTitle.textContent = FIXED_TITLE;
@@ -867,9 +863,9 @@
       if (canvasTagMobile) canvasTagMobile.textContent = footerTag;
     }
 
-
-<!-- 枠ボタンの描画 -->
-
+    /* =========================
+       枠ボタン描画
+    ========================= */
     function renderSlotButtons() {
       slotButtonsEl.innerHTML = '';
 
@@ -891,9 +887,9 @@
         `選択中: SLOT ${selectedSlot + 1}${slots[selectedSlot].name ? ' / ' + slots[selectedSlot].name : ''}`;
     }
 
-
-<!-- キャラ一覧の描画 -->
-
+    /* =========================
+       キャラ一覧描画（検索対応）
+    ========================= */
     function renderLibrary() {
       libraryEl.innerHTML = '';
 
@@ -935,9 +931,9 @@
       });
     }
 
-
-<!-- 配列シャッフル -->
-
+    /* =========================
+       配列シャッフル
+    ========================= */
     function shuffleArray(array) {
       const result = [...array];
       for (let i = result.length - 1; i > 0; i--) {
@@ -947,9 +943,9 @@
       return result;
     }
 
-
-<!-- ランダム編成 -->
-
+    /* =========================
+       ランダム編成
+    ========================= */
     function fillSlotsRandomly() {
       const shuffled = shuffleArray(CHARACTER_LIBRARY);
       const picked = shuffled.slice(0, slots.length);
@@ -966,9 +962,9 @@
       selectedSlot = 0;
     }
 
-
-<!-- グリッド描画 -->
-
+    /* =========================
+       グリッド描画
+    ========================= */
     function buildGrid(targetEl) {
       if (!targetEl) return;
       targetEl.innerHTML = '';
@@ -1004,9 +1000,9 @@
       buildGrid(gridMobileEl);
     }
 
-
-<!-- 枠にキャラをセットする -->
-
+    /* =========================
+       枠にキャラをセット
+    ========================= */
     function applySlotById(slotIndex, characterId) {
       const character = characterMap[characterId];
       if (!character) return;
@@ -1019,9 +1015,11 @@
       };
     }
 
-
-<!-- URL更新 -->
-
+    /* =========================
+       URL更新
+       c= で短縮構成を保存
+       例: ?c=0.1.2.a.b...
+    ========================= */
     function updateShareUrl() {
       const url = new URL(window.location.href);
 
@@ -1047,9 +1045,11 @@
       history.replaceState(null, '', url.toString());
     }
 
-
-<!-- URLからの状態復元 -->
-
+    /* =========================
+       URLから状態復元
+       まず短縮形式 c= を読む
+       旧形式 slots= にも一応対応
+    ========================= */
     function loadFromUrl() {
       const params = new URLSearchParams(window.location.search);
       const compactSlots = params.get('c');
@@ -1082,9 +1082,9 @@
       }
     }
 
-
-<!-- 投稿文のコピー -->
-
+    /* =========================
+       投稿文コピー
+    ========================= */
     async function copyShareUrl() {
       updateShareUrl();
 
@@ -1103,9 +1103,10 @@
       }
     }
 
-
-<!-- 画像読み込み待ち -->
-
+    /* =========================
+       画像読み込み待ち
+       html2canvas前に全imgの読み込みを待つ
+    ========================= */
     async function waitForImages(container) {
       const images = Array.from(container.querySelectorAll('img'));
 
@@ -1128,9 +1129,9 @@
       );
     }
 
-
-<!-- iPhone / iPad系判定 -->
-
+    /* =========================
+       iPhone / iPad系判定
+    ========================= */
     function isIOSLike() {
       const ua = navigator.userAgent;
       const touchMac = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
@@ -1146,9 +1147,10 @@
       });
     }
 
-
-<!-- 書き出し用canvas生成 -->
-
+    /* =========================
+       書き出し用canvas生成
+       保存時だけ一部エフェクトを軽量化
+    ========================= */
     async function renderExportCanvas(target, scaleValue) {
       return await html2canvas(target, {
         backgroundColor: null,
@@ -1175,9 +1177,9 @@
       });
     }
 
-
-<!-- イベント登録 -->
-
+    /* =========================
+       イベント登録
+    ========================= */
     searchInput.addEventListener('input', () => {
       renderLibrary();
     });
@@ -1211,9 +1213,11 @@
       updateShareUrl();
     };
 
-
-<!-- PNG書き出し -->
-
+    /* =========================
+       PNG書き出し
+       スマホ時は隠れているデスクトップ用プレビューを
+       一時的に画面外へ出してから撮影
+    ========================= */
     downloadBtn.onclick = async () => {
       const desktopPanel = document.querySelector('.panel-preview-desktop');
       const target = document.getElementById('exportTarget');
@@ -1305,9 +1309,9 @@
       }
     };
 
-
-<!-- 初期化 -->
-
+    /* =========================
+       初期化
+    ========================= */
     loadFromUrl();
     renderSlotButtons();
     renderLibrary();
@@ -1315,8 +1319,9 @@
     updateShareUrl();
   </script>
 
-<!-- クレジット -->
-
+  <!-- =========================
+       クレジット
+  ========================= -->
   <div class="wrap">
     <div class="credit">
       <div>作者：@Parker33206365</div>
