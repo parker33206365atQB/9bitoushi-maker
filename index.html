@@ -646,7 +646,7 @@
                 </div>
                 <div class="grid" id="gridMobile"></div>
                 <div class="canvas-footer">
-                  <div id="canvasTagMobile">#私を構成する9人の美闘士</div>
+                  <div id="canvasTagMobile">#私を構成する9人の美闘士 #My9QBwarriors</div>
                   <div class="muted">Template Maker</div>
                 </div>
               </div>
@@ -689,7 +689,7 @@
             </div>
             <div class="grid" id="grid"></div>
             <div class="canvas-footer">
-              <div id="canvasTag">#私を構成する9人の美闘士</div>
+              <div id="canvasTag">#私を構成する9人の美闘士 #My9QBwarriors</div>
               <div class="muted">Template Maker</div>
             </div>
           </div>
@@ -784,8 +784,10 @@
       document.title = FIXED_TITLE + 'メーカー';
       canvasTitle.textContent = FIXED_TITLE;
       if (canvasTitleMobile) canvasTitleMobile.textContent = FIXED_TITLE;
-      canvasTag.textContent = FIXED_TAG_PRIMARY;
-      if (canvasTagMobile) canvasTagMobile.textContent = FIXED_TAG_PRIMARY;
+
+      const footerTag = `${FIXED_TAG_PRIMARY} ${FIXED_TAG_SECONDARY}`;
+      canvasTag.textContent = footerTag;
+      if (canvasTagMobile) canvasTagMobile.textContent = footerTag;
     }
 
     function renderSlotButtons() {
