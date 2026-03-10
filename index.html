@@ -754,6 +754,10 @@
       CHARACTER_LIBRARY.map((c) => [c.id, c])
     );
 
+    const characterIndexMap = Object.fromEntries(
+      CHARACTER_LIBRARY.map((c, i) => [c.id, i])
+    );
+
     const slots = Array.from({ length: 9 }, (_, i) => ({
       index: i,
       id: "",
@@ -921,26 +925,51 @@
     function updateShareUrl() {
       const url = new URL(window.location.href);
 
-      const slotIds = slots.map((slot) => slot.id || "").join(",");
-      if (slotIds.replace(/,/g, "") === "") {
-        url.searchParams.delete("slots");
+      const compactSlots = slots
+        .map((slot) => {
+          if (!slot.id) return '';
+          const idx = characterIndexMap[slot.id];
+          return Number.isInteger(idx) ? idx.toString(36) : '';
+        })
+        .join('.');
+
+      if (compactSlots.replace(/\./g, '') === '') {
+        url.searchParams.delete('c');
       } else {
-        url.searchParams.set("slots", slotIds);
+        url.searchParams.set('c', compactSlots);
       }
 
-      url.searchParams.delete("title");
-      url.searchParams.delete("tag");
-      history.replaceState(null, "", url.toString());
+      url.searchParams.delete('slots');
+      url.searchParams.delete('title');
+      url.searchParams.delete('tag');
+
+      history.replaceState(null, '', url.toString());
     }
 
     function loadFromUrl() {
       const params = new URLSearchParams(window.location.search);
-      const savedSlots = params.get("slots");
+      const compactSlots = params.get('c');
+      const savedSlots = params.get('slots');
 
       applyFixedText();
 
+      if (compactSlots) {
+        const values = compactSlots.split('.');
+        values.slice(0, 9).forEach((value, idx) => {
+          if (!value) return;
+
+          const charIndex = parseInt(value, 36);
+          const character = CHARACTER_LIBRARY[charIndex];
+
+          if (character) {
+            applySlotById(idx, character.id);
+          }
+        });
+        return;
+      }
+
       if (savedSlots) {
-        const ids = savedSlots.split(",");
+        const ids = savedSlots.split(',');
         ids.slice(0, 9).forEach((id, idx) => {
           if (id && characterMap[id]) {
             applySlotById(idx, id);
